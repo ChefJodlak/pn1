@@ -6,8 +6,6 @@
 
 typedef unsigned int uint32_t;
 
-
-
 unsigned char receivedCharacter;
 unsigned char receivedFlag;
 
@@ -44,39 +42,39 @@ void put(unsigned char c)
     TI = 0;
 }
 
-// void put_DEC_U8(uint16_t w) {
-//     int number = w;
-//     int alreadyPrinted = 0;
-//     int magnitude = 1;
+void put_BIN_U32(uint32_t w)
+{
+  char bin[32];
+  memset(bin, 0x00, sizeof(bin));
 
-//     put(' ');
+  int idx = 0;
+  int rest = 0;
+  while ( w > 0 ) {
+    rest = w % 2;
+    w = ( w - rest ) / 2;
 
-//     while(alreadyPrinted < w) {
-//         while(number >= 10) {
-//             magnitude = magnitude * 10;
-//             number = number / 10;
-//         }
-//         put(48 + number);
-//         alreadyPrinted += magnitude * number;
-//         number = w - alreadyPrinted;
-//         magnitude = 1;
-//     }
+    bin[idx] = rest;
+    ++idx;
+  }
 
-//     put(' ');
+  put(' ');
+  idx = 0;
+  // drukuję od najbardziej znaczącego bitu
+  while (idx < 32) {
+    put('0' + bin[idx]);
+    idx++;
+  }
+  put(' ');
 
-//     receivedCharacter = '\0';
-// }
-
-void put_BIN_U32(uint32_t w){
-    
+  receivedCharacter = '\0';
 }
 
 void get_DEC_U32(unsigned char *x)
 {
     while (receivedCharacter != ' '){
         if(receivedFlag && (receivedCharacter <= '9' && receivedCharacter >= '0')) {
-            *x = *x << 1;
-            *x+= receivedCharacter - '0';
+            *x = *x * 10;
+            *x += receivedCharacter - '0';
             receivedFlag = 0;
         }
     }
@@ -99,7 +97,7 @@ void main(void)
     init(19200);
     for(;;) {
         get_DEC_U32(&z1);
-        w = z1 -3;
+        w = z1 - 3;
         put_BIN_U32(w);
         z1 = 0; // po wypisaniu musimy wyzerowac zmienna
     }
