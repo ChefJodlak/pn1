@@ -47,8 +47,8 @@ void put_BIN_U32(uint32_t w)
   char bin[32];
   memset(bin, 0x00, sizeof(bin));
 
-  int idx = 0;
-  int rest = 0;
+  int32_t idx = 0;
+  int32_t rest = 0;
   while ( w > 0 ) {
     rest = w % 2;
     w = ( w - rest ) / 2;
